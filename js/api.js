@@ -1,32 +1,32 @@
-/** MUSIC PRO - JIOSAAVN API MODULE */
+/** MUSIC PRO - JIOSAAVN API MODULE (Working Version) */
 
-// This is a common public wrapper base URL. 
-// Note: These public instances can sometimes go down.
-const BASE_URL = 'https://saavn.dev/api'; 
+// Use this stable Vercel instance
+const BASE_URL = 'https://jiosaavn-api-beta.vercel.app'; 
 
 export async function searchTracks(query) {
-    console.log("🔍 Searching JioSaavn for:", query);
+    console.log("🔍 Searching for:", query);
     try {
-        // We use the /search/songs endpoint
+        // Updated endpoint: /search/songs
         const res = await fetch(`${BASE_URL}/search/songs?query=${encodeURIComponent(query)}`);
+        
+        if (!res.ok) throw new Error("API instance is down");
+        
         const data = await res.json();
 
-        if (!data.success || data.data.results.length === 0) {
-            return [];
-        }
+        // The API returns data inside a 'data' object, then 'results' array
+        const results = data.data?.results || data.results || [];
 
-        // Map JioSaavn data to our app's format
-        return data.data.results.map(song => ({
+        return results.map(song => ({
             id: song.id,
             name: song.name,
-            artist: song.artists.primary[0]?.name || 'Unknown Artist',
-            // JioSaavn provides multiple qualities, we take the 500x500 image
-            image: song.image[2]?.url || song.image[0]?.url,
-            // We store the highest quality download link for the player
-            downloadUrl: song.downloadUrl[4]?.url || song.downloadUrl[2]?.url
+            artist: song.primaryArtists || song.artists?.primary[0]?.name || 'Unknown Artist',
+            // Get the high-quality 500x500 image
+            image: song.image[song.image.length - 1]?.link || song.image[2]?.url || '',
+            // Get the 320kbps download link
+            downloadUrl: song.downloadUrl[song.downloadUrl.length - 1]?.link || song.downloadUrl[4]?.url || ''
         }));
     } catch (err) {
         console.error("❌ JioSaavn API Error:", err);
-        return null;
+        return [];
     }
 }
