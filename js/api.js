@@ -61,7 +61,7 @@ export async function getYoutubeStream(trackName, artistName) {
     try {
         const query = encodeURIComponent(`${trackName} ${artistName} audio`);
         // We use a public Piped instance API to find the video and stream
-        const searchRes = await fetch(`https://pipedapi.kavin.rocks/search?q=${query}&filter=videos`);
+        const searchRes = await fetch(`https://pipedapi.darkness.services/search?q=${query}&filter=videos`);
         const searchData = await searchRes.json();
         
         const videoId = searchData.content[0]?.videoId;
