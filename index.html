@@ -15,19 +15,15 @@
                 <span class="logo-icon">🌸</span>
                 <h1 class="logo-text">Music Pro</h1>
             </div>
-            
             <ul class="nav-links">
                 <li class="nav-item active" data-view="home">
-                    <span class="icon">🏠</span>
-                    <span class="label">Home</span>
+                    <span class="icon">🏠</span> <span class="label">Home</span>
                 </li>
                 <li class="nav-item" data-view="search">
-                    <span class="icon">🔍</span>
-                    <span class="label">Search</span>
+                    <span class="icon">🔍</span> <span class="label">Search</span>
                 </li>
                 <li class="nav-item" data-view="library">
-                    <span class="icon">📚</span>
-                    <span class="label">Library</span>
+                    <span class="icon">📚</span> <span class="label">Library</span>
                 </li>
             </ul>
         </nav>
@@ -35,27 +31,27 @@
         <main class="content-view">
             <header class="view-header">
                 <div class="search-bar-container">
-                    <input type="text" id="global-search" placeholder="What do you want to listen to?" class="soft-search">
+                    <input type="text" id="global-search" placeholder="Search for tracks..." class="soft-search">
                 </div>
             </header>
 
             <section id="home-section" class="view-section">
                 <h2 class="section-title">Editor's Picks</h2>
                 <div id="playlist-grid" class="grid-container">
-                    </div>
+                    <p class="loading-msg">Waking up the music...</p>
+                </div>
             </section>
 
             <section id="playlist-detail-section" class="view-section hidden">
                 <button id="back-to-home" class="back-btn">← Back</button>
                 <div class="playlist-header">
-                    <img id="detail-cover" src="" alt="Cover" class="detail-img">
+                    <div id="detail-cover" class="detail-img-placeholder"></div>
                     <div class="detail-meta">
-                        <h2 id="detail-title">Playlist Name</h2>
-                        <p id="detail-desc">Description goes here...</p>
+                        <h2 id="detail-title">Loading...</h2>
+                        <p id="detail-desc"></p>
                     </div>
                 </div>
-                <div id="track-list" class="track-list">
-                    </div>
+                <div id="track-list" class="track-list"></div>
             </section>
         </main>
     </div>
@@ -68,17 +64,14 @@
                 <span id="player-artist" class="track-artist">Pick a vibe!</span>
             </div>
         </div>
-        
         <div class="player-controls">
             <button id="prev-btn" class="icon-btn">⏮</button>
             <button id="play-btn" class="play-pause-btn">▶</button>
             <button id="next-btn" class="icon-btn">⏭</button>
         </div>
-
         <div class="player-utils">
             <input type="range" id="volume-slider" class="soft-range" min="0" max="1" step="0.01" value="0.8">
         </div>
-
         <audio id="main-audio-player"></audio>
     </footer>
 
