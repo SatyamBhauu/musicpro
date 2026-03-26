@@ -198,5 +198,34 @@ button:hover {
         padding: 20px;
         padding-bottom: 160px;
     }
+
+    .card {
+    background: var(--white);
+    padding: 15px;
+    border-radius: var(--radius-card);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+    transition: var(--transition);
+    text-align: center;
 }
+
+.card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--soft-shadow);
+}
+
+.card-img {
+    width: 100%;
+    aspect-ratio: 1/1;
+    border-radius: 15px;
+    object-fit: cover;
+    margin-bottom: 12px;
+}
+
+.card-title {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
