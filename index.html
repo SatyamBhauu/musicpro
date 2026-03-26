@@ -3,34 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Music Pro | Feel the Vibe</title>
+    <title>Music Pro | Pastel Beats</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <nav class="app-nav">
-        <div class="logo">🌸 Music Pro</div>
-        <ul class="nav-links">
-            <li class="active">Home</li>
-            <li>Search</li>
-            <li>Library</li>
-        </ul>
-    </nav>
+    <div class="layout-wrapper">
+        <nav class="app-nav">
+            <div class="logo-container">
+                <span class="logo-icon">🌸</span>
+                <h1 class="logo-text">Music Pro</h1>
+            </div>
+            
+            <ul class="nav-links">
+                <li class="nav-item active" data-view="home">
+                    <span class="icon">🏠</span>
+                    <span class="label">Home</span>
+                </li>
+                <li class="nav-item" data-view="search">
+                    <span class="icon">🔍</span>
+                    <span class="label">Search</span>
+                </li>
+                <li class="nav-item" data-view="library">
+                    <span class="icon">📚</span>
+                    <span class="label">Library</span>
+                </li>
+            </ul>
+        </nav>
 
-    <main id="app-content">
-        <section id="home-view">
-            <h2 class="section-title">Editor's Picks</h2>
-            <div id="playlist-grid" class="grid-container">
+        <main class="content-view">
+            <header class="view-header">
+                <div class="search-bar-container">
+                    <input type="text" id="global-search" placeholder="What do you want to listen to?" class="soft-search">
                 </div>
-        </section>
-    </main>
+            </header>
+
+            <section id="home-section" class="view-section">
+                <h2 class="section-title">Editor's Picks</h2>
+                <div id="playlist-grid" class="grid-container">
+                    </div>
+            </section>
+
+            <section id="playlist-detail-section" class="view-section hidden">
+                <button id="back-to-home" class="back-btn">← Back</button>
+                <div class="playlist-header">
+                    <img id="detail-cover" src="" alt="Cover" class="detail-img">
+                    <div class="detail-meta">
+                        <h2 id="detail-title">Playlist Name</h2>
+                        <p id="detail-desc">Description goes here...</p>
+                    </div>
+                </div>
+                <div id="track-list" class="track-list">
+                    </div>
+            </section>
+        </main>
+    </div>
 
     <footer class="player-bar">
         <div class="current-track">
-            <div class="track-art"></div>
+            <div id="player-art" class="track-art"></div>
             <div class="track-info">
-                <span class="track-name">Select a song</span>
-                <span class="track-artist">Artist</span>
+                <span id="player-title" class="track-name">No track selected</span>
+                <span id="player-artist" class="track-artist">Pick a vibe!</span>
             </div>
         </div>
         
@@ -40,9 +75,11 @@
             <button id="next-btn" class="icon-btn">⏭</button>
         </div>
 
-        <div class="volume-container">
-            <input type="range" class="volume-slider" min="0" max="100" value="80">
+        <div class="player-utils">
+            <input type="range" id="volume-slider" class="soft-range" min="0" max="1" step="0.01" value="0.8">
         </div>
+
+        <audio id="main-audio-player"></audio>
     </footer>
 
     <script type="module" src="js/app.js"></script>
