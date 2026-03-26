@@ -1,8 +1,8 @@
 /** MUSIC PRO - SUPABASE API MODULE */
 
 // Replace with your actual project details from Supabase Settings -> API
-const SUPABASE_URL = 'https://your-project-id.supabase.co';
-const SUPABASE_KEY = 'your-anon-public-key';
+const SUPABASE_URL = 'https://vyfffwclpmxmrhnuvrod.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_YCc9HAyY5lgrmPq17nN67w_QSfkCGrI';
 const BUCKET_NAME = 'Music';
 
 export async function fetchMyLibrary() {
