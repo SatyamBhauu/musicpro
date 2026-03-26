@@ -1,32 +1,47 @@
-/** MUSIC PRO - JIOSAAVN API MODULE (Working Version) */
+/** MUSIC PRO - JIOSAAVN + YOUTUBE HYBRID API */
 
-// Use this stable Vercel instance
-const BASE_URL = 'https://jiosaavn-api-beta.vercel.app'; 
+const JIO_BASE_URL = 'https://jiosaavn-api-beta.vercel.app'; 
+const YOUTUBE_PROXY = 'https://pipedapi.kavin.rocks'; 
 
+// STEP 1: Get song metadata from JioSaavn
 export async function searchTracks(query) {
-    console.log("🔍 Searching for:", query);
     try {
-        // Updated endpoint: /search/songs
-        const res = await fetch(`${BASE_URL}/search/songs?query=${encodeURIComponent(query)}`);
-        
-        if (!res.ok) throw new Error("API instance is down");
-        
+        const res = await fetch(`${JIO_BASE_URL}/search/songs?query=${encodeURIComponent(query)}`);
         const data = await res.json();
-
-        // The API returns data inside a 'data' object, then 'results' array
         const results = data.data?.results || data.results || [];
 
         return results.map(song => ({
-            id: song.id,
             name: song.name,
             artist: song.primaryArtists || song.artists?.primary[0]?.name || 'Unknown Artist',
-            // Get the high-quality 500x500 image
             image: song.image[song.image.length - 1]?.link || song.image[2]?.url || '',
-            // Get the 320kbps download link
-            downloadUrl: song.downloadUrl[song.downloadUrl.length - 1]?.link || song.downloadUrl[4]?.url || ''
+            // We keep the title/artist to search YouTube later
+            searchQuery: `${song.name} ${song.primaryArtists || ''} official audio`
         }));
     } catch (err) {
-        console.error("❌ JioSaavn API Error:", err);
+        console.error("❌ JioSaavn Search Error:", err);
         return [];
+    }
+}
+
+// STEP 2: Find the YouTube Audio Stream using the JioSaavn info
+export async function getYouTubeStream(searchQuery) {
+    try {
+        // Search YouTube via Piped
+        const searchRes = await fetch(`${YOUTUBE_PROXY}/search?q=${encodeURIComponent(searchQuery)}&filter=videos`);
+        const searchData = await searchRes.json();
+        const videoId = searchData.content[0]?.videoId;
+
+        if (!videoId) return null;
+
+        // Get the actual audio stream link
+        const streamRes = await fetch(`${YOUTUBE_PROXY}/streams/${videoId}`);
+        const streamData = await streamRes.json();
+        
+        // Pick the best audio-only stream
+        const audioStream = streamData.audioStreams.find(s => s.mimeType.includes('audio/webm')) || streamData.audioStreams[0];
+        return audioStream.url;
+    } catch (err) {
+        console.error("❌ YouTube Stream Error:", err);
+        return null;
     }
 }
