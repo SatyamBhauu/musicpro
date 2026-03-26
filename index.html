@@ -51,28 +51,38 @@
                         <p id="detail-description" class="text-muted"></p>
                     </div>
                 </div>
-                <div id="track-list" class="track-list-container">
-                    </div>
+                <div id="track-list" class="track-list-container"></div>
             </section>
         </main>
     </div>
 
     <footer class="player-bar">
         <div class="current-track">
-            <div id="player-art" class="track-art"></div>
+            <img id="player-art" class="track-art" src="https://via.placeholder.com/50">
             <div class="track-info">
                 <span id="player-title" class="track-name">No track selected</span>
                 <span id="player-artist" class="track-artist">Pick a vibe!</span>
             </div>
         </div>
-        <div class="player-controls">
-            <button id="prev-btn" class="icon-btn">⏮</button>
-            <button id="play-btn" class="play-pause-btn">▶</button>
-            <button id="next-btn" class="icon-btn">⏭</button>
+        
+        <div class="player-center">
+            <div class="player-controls">
+                <button id="prev-btn" class="icon-btn">⏮</button>
+                <button id="play-btn" class="play-pause-btn">▶</button>
+                <button id="next-btn" class="icon-btn">⏭</button>
+            </div>
+            <div class="progress-container">
+                <span id="current-time">0:00</span>
+                <input type="range" id="progress-bar" class="soft-range progress" min="0" max="100" value="0">
+                <span id="duration-time">0:00</span>
+            </div>
         </div>
+
         <div class="player-utils">
+            <span class="icon">🔊</span>
             <input type="range" id="volume-slider" class="soft-range" min="0" max="1" step="0.01" value="0.8">
         </div>
+
         <audio id="main-audio-player"></audio>
     </footer>
 
