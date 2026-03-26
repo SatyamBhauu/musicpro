@@ -1,3 +1,5 @@
+import * as api from './api.js';
+
 const audio = document.getElementById('main-audio-player');
 const playBtn = document.getElementById('play-btn');
 const progressBar = document.getElementById('progress-bar');
@@ -6,23 +8,34 @@ const durationTimeEl = document.getElementById('duration-time');
 
 export const playerState = {
     isPlaying: false,
-    currentTrack: null,
-    queue: []
+    currentTrack: null
 };
 
-export function loadTrack(track) {
-    if (!track.preview_url) {
-        alert("No preview available for this track! (Spotify restriction)");
+/**
+ * LOAD: Fetches YouTube audio and updates player UI
+ */
+export async function loadTrack(track) {
+    // 1. Update UI to "Loading" state
+    document.getElementById('player-title').innerText = "Loading...";
+    document.getElementById('player-artist').innerText = "Finding audio source...";
+    
+    // 2. Get YouTube Stream
+    const streamUrl = await api.getYoutubeStream(track.name, track.artists[0].name);
+
+    if (!streamUrl) {
+        alert("Could not find audio for this song 🌸");
+        document.getElementById('player-title').innerText = "Error";
         return;
     }
 
+    // 3. Set Audio Source and Play
+    audio.src = streamUrl;
     playerState.currentTrack = track;
-    audio.src = track.preview_url;
-    
-    // Update UI
+
+    // 4. Final UI Update with Spotify Metadata
     document.getElementById('player-title').innerText = track.name;
     document.getElementById('player-artist').innerText = track.artists[0].name;
-    document.getElementById('player-art').src = track.album.images[0].url;
+    document.getElementById('player-art').src = track.album?.images[0]?.url || '';
 
     playTrack();
 }
@@ -40,19 +53,20 @@ export function pauseTrack() {
 }
 
 export function togglePlay() {
-    if (playerState.isPlaying) pauseTrack();
-    else playTrack();
+    if (!audio.src) return;
+    playerState.isPlaying ? pauseTrack() : playTrack();
 }
 
-// Time Updating Logic
+// Update Progress Bar as song plays
 audio.ontimeupdate = () => {
+    if (!audio.duration) return;
     const progress = (audio.currentTime / audio.duration) * 100;
-    progressBar.value = progress || 0;
+    progressBar.value = progress;
     currentTimeEl.innerText = formatTime(audio.currentTime);
-    if (audio.duration) durationTimeEl.innerText = formatTime(audio.duration);
+    durationTimeEl.innerText = formatTime(audio.duration);
 };
 
-// Seek Logic
+// Seek song when dragging progress bar
 progressBar.oninput = () => {
     const seekTime = (progressBar.value / 100) * audio.duration;
     audio.currentTime = seekTime;
