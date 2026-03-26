@@ -1,42 +1,32 @@
-/** MUSIC PRO - API MODULE (Stabilized YouTube Version) */
+/** MUSIC PRO - JIOSAAVN API MODULE */
 
-// Use a different stable instance
-const BASE_URL = 'https://pipedapi.kavin.rocks'; 
+// This is a common public wrapper base URL. 
+// Note: These public instances can sometimes go down.
+const BASE_URL = 'https://saavn.dev/api'; 
 
 export async function searchTracks(query) {
-    console.log("🔍 Searching for:", query);
+    console.log("🔍 Searching JioSaavn for:", query);
     try {
-        const res = await fetch(`${BASE_URL}/search?q=${encodeURIComponent(query)}&filter=videos`);
-        
-        if (!res.ok) throw new Error("Network response was not ok");
-        
+        // We use the /search/songs endpoint
+        const res = await fetch(`${BASE_URL}/search/songs?query=${encodeURIComponent(query)}`);
         const data = await res.json();
-        
-        if (!data.content || data.content.length === 0) {
-            console.warn("No results found on YouTube.");
+
+        if (!data.success || data.data.results.length === 0) {
             return [];
         }
 
-        return data.content.map(item => ({
-            name: item.title,
-            artist: item.uploaderName,
-            image: item.thumbnail,
-            id: item.videoId
+        // Map JioSaavn data to our app's format
+        return data.data.results.map(song => ({
+            id: song.id,
+            name: song.name,
+            artist: song.artists.primary[0]?.name || 'Unknown Artist',
+            // JioSaavn provides multiple qualities, we take the 500x500 image
+            image: song.image[2]?.url || song.image[0]?.url,
+            // We store the highest quality download link for the player
+            downloadUrl: song.downloadUrl[4]?.url || song.downloadUrl[2]?.url
         }));
     } catch (err) {
-        console.error("❌ Search API Error:", err);
-        return null; // Return null so we can show an error message in UI
-    }
-}
-
-export async function getAudioStream(videoId) {
-    try {
-        const res = await fetch(`${BASE_URL}/streams/${videoId}`);
-        const data = await res.json();
-        const audioStream = data.audioStreams.find(s => s.mimeType.includes('audio/webm')) || data.audioStreams[0];
-        return audioStream.url;
-    } catch (err) {
-        console.error("❌ Stream Error:", err);
+        console.error("❌ JioSaavn API Error:", err);
         return null;
     }
 }
