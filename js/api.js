@@ -1,59 +1,44 @@
-/** MUSIC PRO - API MODULE (Robust Scraper) */
+/** MUSIC PRO - SUPABASE API MODULE */
 
-const JIO_API_URL = 'https://jiosaavn-api-beta.vercel.app'; 
+// Replace with your actual project details from Supabase Settings -> API
+const SUPABASE_URL = 'https://your-project-id.supabase.co';
+const SUPABASE_KEY = 'your-anon-public-key';
+const BUCKET_NAME = 'Music';
 
-// Primary and Secondary Proxies
-const PROXIES = [
-    'https://corsproxy.io/?',
-    'https://api.allorigins.win/get?url='
-];
-
-export async function searchTracks(query) {
+export async function fetchMyLibrary() {
     try {
-        const res = await fetch(`${JIO_API_URL}/search/songs?query=${encodeURIComponent(query)}`);
-        const data = await res.json();
-        const results = data.data?.results || data.results || [];
+        // We call the 'list' endpoint to see all files in the bucket
+        const response = await fetch(`${SUPABASE_URL}/storage/v1/object/list/${BUCKET_NAME}`, {
+            method: 'POST',
+            headers: {
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${SUPABASE_KEY}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                path: '', // Leave empty to get all files
+                limit: 100,
+                offset: 0,
+                sortBy: { column: 'name', order: 'asc' }
+            })
+        });
 
-        return results.map(song => ({
-            name: song.name,
-            artist: song.primaryArtists || 'Unknown Artist',
-            image: song.image[song.image.length - 1]?.link || song.image[2]?.url || '',
-            searchQuery: `${song.name} ${song.primaryArtists || ''} official audio`
-        }));
+        const files = await response.json();
+
+        // Convert the file list into our "Music Pro" song format
+        return files.map(file => {
+            // This is the direct public URL for the audio file
+            const publicUrl = `${SUPABASE_URL}/storage/v1/object/public/${BUCKET_NAME}/${file.name}`;
+            
+            return {
+                name: file.name.replace('.mp3', ''), // Remove extension for display
+                artist: "My Library",
+                image: "https://via.placeholder.com/300/FFB6C1/5A5A5A?text=My+Music", // Default cute cover
+                downloadUrl: publicUrl
+            };
+        });
     } catch (err) {
-        console.error("❌ JioSaavn Search Error:", err);
+        console.error("Supabase Fetch Error:", err);
         return [];
     }
-}
-
-export async function getYouTubeVideoId(searchQuery) {
-    const targetUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(searchQuery)}`;
-    
-    for (const proxy of PROXIES) {
-        try {
-            console.log(`📡 Trying Proxy: ${proxy}`);
-            let html = "";
-
-            if (proxy.includes('allorigins')) {
-                const res = await fetch(`${proxy}${encodeURIComponent(targetUrl)}`);
-                const data = await res.json();
-                html = data.contents;
-            } else {
-                const res = await fetch(`${proxy}${encodeURIComponent(targetUrl)}`);
-                html = await res.text();
-            }
-
-            // Improved Regex to find the videoId
-            const regex = /"videoId":"([^"]{11})"/;
-            const match = html.match(regex);
-            
-            if (match && match[1]) {
-                console.log("✅ Found Video ID:", match[1]);
-                return match[1];
-            }
-        } catch (err) {
-            console.warn(`⚠️ Proxy ${proxy} failed, trying next...`);
-        }
-    }
-    return null;
 }
