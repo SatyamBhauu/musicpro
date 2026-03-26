@@ -2,7 +2,7 @@
 
 // Replace with your actual project details from Supabase Settings -> API
 const SUPABASE_URL = 'https://vyfffwclpmxmrhnuvrod.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_YCc9HAyY5lgrmPq17nN67w_QSfkCGrI';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ5ZmZmd2NscG14bXJobnV2cm9kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ1MjEwNDIsImV4cCI6MjA5MDA5NzA0Mn0.8fDhfAIF5QuvROZey1_0tUuY13uX5rWJOkaXwe0yZ-Y';
 const BUCKET_NAME = 'Music';
 
 export async function fetchMyLibrary() {
