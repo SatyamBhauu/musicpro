@@ -8,21 +8,13 @@ const durationTimeEl = document.getElementById('duration-time');
 let ytPlayer; 
 let progressInterval;
 
-// Initialize YouTube API
+// YouTube API Setup
 window.onYouTubeIframeAPIReady = () => {
     ytPlayer = new YT.Player('main-audio-player', {
-        height: '0',
-        width: '0',
-        videoId: '',
-        playerVars: {
-            'autoplay': 0,
-            'controls': 0,
-            'disablekb': 1,
-            'playsinline': 1
-        },
+        height: '0', width: '0', videoId: '',
+        playerVars: { 'autoplay': 0, 'controls': 0, 'playsinline': 1 },
         events: {
             'onStateChange': (event) => {
-                // Change Play/Pause icon based on state
                 if (event.data === YT.PlayerState.PLAYING) {
                     playBtn.innerText = '⏸';
                     startProgressUpdate();
@@ -31,41 +23,37 @@ window.onYouTubeIframeAPIReady = () => {
                     clearInterval(progressInterval);
                 }
             },
-            'onReady': () => console.log("🌸 YouTube Engine Ready")
+            'onError': (e) => {
+                console.error("YT Player Error:", e.data);
+                alert("YouTube blocked this playback. Try another song! 🌸");
+            }
         }
     });
 };
 
-// Load YT Script
-if (!window.YT) {
-    const tag = document.createElement('script');
-    tag.src = "https://www.youtube.com/iframe_api";
-    document.head.appendChild(tag);
-}
-
 export async function loadTrack(track) {
-    document.getElementById('player-title').innerText = "Searching...";
-    document.getElementById('player-artist').innerText = "Fetching vibe... 🌸";
+    document.getElementById('player-title').innerText = "Searching YouTube...";
+    document.getElementById('player-artist').innerText = "Bypassing restrictions... 🌸";
 
     const videoId = await api.getYouTubeVideoId(track.searchQuery);
 
     if (videoId && ytPlayer) {
-        // Update UI Metadata
         document.getElementById('player-title').innerText = track.name;
         document.getElementById('player-artist').innerText = track.artist;
         document.getElementById('player-art').src = track.image;
 
-        // Play the video in the hidden iframe
         ytPlayer.loadVideoById(videoId);
     } else {
-        alert("Couldn't connect to the music stream. 🛠️");
+        document.getElementById('player-title').innerText = "Connection Failed";
+        document.getElementById('player-artist').innerText = "Check your internet or try again.";
+        console.error("Failed to retrieve a Video ID.");
     }
 }
 
 export function togglePlay() {
     if (!ytPlayer) return;
     const state = ytPlayer.getPlayerState();
-    state === YT.PlayerState.PLAYING ? ytPlayer.pauseVideo() : ytPlayer.playVideo();
+    state === 1 ? ytPlayer.pauseVideo() : ytPlayer.playVideo();
 }
 
 function startProgressUpdate() {
