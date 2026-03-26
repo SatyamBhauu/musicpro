@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Pro | Feel the Vibe</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <nav class="app-nav">
+        <div class="logo">🌸 Music Pro</div>
+        <ul class="nav-links">
+            <li class="active">Home</li>
+            <li>Search</li>
+            <li>Library</li>
+        </ul>
+    </nav>
+
+    <main id="app-content">
+        <section id="home-view">
+            <h2 class="section-title">Editor's Picks</h2>
+            <div id="playlist-grid" class="grid-container">
+                </div>
+        </section>
+    </main>
+
+    <footer class="player-bar">
+        <div class="current-track">
+            <div class="track-art"></div>
+            <div class="track-info">
+                <span class="track-name">Select a song</span>
+                <span class="track-artist">Artist</span>
+            </div>
+        </div>
+        
+        <div class="player-controls">
+            <button id="prev-btn" class="icon-btn">⏮</button>
+            <button id="play-btn" class="play-pause-btn">▶</button>
+            <button id="next-btn" class="icon-btn">⏭</button>
+        </div>
+
+        <div class="volume-container">
+            <input type="range" class="volume-slider" min="0" max="100" value="80">
+        </div>
+    </footer>
+
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>
