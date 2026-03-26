@@ -16,13 +16,13 @@
                 <h1 class="logo-text">Music Pro</h1>
             </div>
             <ul class="nav-links">
-                <li class="nav-item active" data-view="home">
+                <li class="nav-item active" id="nav-home">
                     <span class="icon">🏠</span> <span class="label">Home</span>
                 </li>
-                <li class="nav-item" data-view="search">
+                <li class="nav-item">
                     <span class="icon">🔍</span> <span class="label">Search</span>
                 </li>
-                <li class="nav-item" data-view="library">
+                <li class="nav-item">
                     <span class="icon">📚</span> <span class="label">Library</span>
                 </li>
             </ul>
@@ -35,23 +35,24 @@
                 </div>
             </header>
 
-            <section id="home-section" class="view-section">
+            <section id="home-view" class="view-section">
                 <h2 class="section-title">Editor's Picks</h2>
                 <div id="playlist-grid" class="grid-container">
                     <p class="loading-msg">Waking up the music...</p>
                 </div>
             </section>
 
-            <section id="playlist-detail-section" class="view-section hidden">
-                <button id="back-to-home" class="back-btn">← Back</button>
+            <section id="detail-view" class="view-section hidden">
+                <button id="back-btn" class="back-pilled">← Back to Home</button>
                 <div class="playlist-header">
-                    <div id="detail-cover" class="detail-img-placeholder"></div>
+                    <img id="detail-img" src="" alt="" class="detail-img">
                     <div class="detail-meta">
-                        <h2 id="detail-title">Loading...</h2>
-                        <p id="detail-desc"></p>
+                        <h2 id="detail-title">Playlist Title</h2>
+                        <p id="detail-description" class="text-muted"></p>
                     </div>
                 </div>
-                <div id="track-list" class="track-list"></div>
+                <div id="track-list" class="track-list-container">
+                    </div>
             </section>
         </main>
     </div>
