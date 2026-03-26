@@ -38,8 +38,9 @@ searchInput.onkeydown = async (e) => {
 };
 
 function renderResults(tracks) {
-    searchResultsGrid.innerHTML = ''; // Clear the "Searching..." text
-    
+    const searchResultsGrid = document.getElementById('search-results-grid');
+    searchResultsGrid.innerHTML = ''; 
+
     tracks.forEach(track => {
         const row = document.createElement('div');
         row.className = 'track-row';
@@ -50,7 +51,6 @@ function renderResults(tracks) {
                 <div class="track-artist-cell">${track.artist}</div>
             </div>
         `;
-        // When clicked, send the track to the player
         row.onclick = () => player.loadTrack(track);
         searchResultsGrid.appendChild(row);
     });
