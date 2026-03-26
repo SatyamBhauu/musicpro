@@ -11,12 +11,11 @@ export async function searchTracks(query) {
         const results = data.data?.results || data.results || [];
 
         return results.map(song => ({
-            name: song.name,
-            artist: song.primaryArtists || song.artists?.primary[0]?.name || 'Unknown Artist',
-            image: song.image[song.image.length - 1]?.link || song.image[2]?.url || '',
-            // We keep the title/artist to search YouTube later
-            searchQuery: `${song.name} ${song.primaryArtists || ''} official audio`
-        }));
+    name: song.name,
+    artist: song.primaryArtists || 'Unknown Artist',
+    image: song.image[song.image.length - 1]?.link || '',
+    searchQuery: `${song.name} ${song.primaryArtists || ''} official audio` // THIS IS CRITICAL
+}));
     } catch (err) {
         console.error("❌ JioSaavn Search Error:", err);
         return [];
