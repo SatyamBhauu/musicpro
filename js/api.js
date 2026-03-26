@@ -1,11 +1,13 @@
-/** MUSIC PRO - API MODULE (JioSaavn + YouTube ID Scraper) */
+/** MUSIC PRO - API MODULE (Robust Scraper) */
 
 const JIO_API_URL = 'https://jiosaavn-api-beta.vercel.app'; 
-const CORS_PROXY = 'https://corsproxy.io/?'; 
 
-/**
- * SEARCH: Gets song metadata from JioSaavn
- */
+// Primary and Secondary Proxies
+const PROXIES = [
+    'https://corsproxy.io/?',
+    'https://api.allorigins.win/get?url='
+];
+
 export async function searchTracks(query) {
     try {
         const res = await fetch(`${JIO_API_URL}/search/songs?query=${encodeURIComponent(query)}`);
@@ -16,7 +18,6 @@ export async function searchTracks(query) {
             name: song.name,
             artist: song.primaryArtists || 'Unknown Artist',
             image: song.image[song.image.length - 1]?.link || song.image[2]?.url || '',
-            // We create a clean query to find the video on YouTube
             searchQuery: `${song.name} ${song.primaryArtists || ''} official audio`
         }));
     } catch (err) {
@@ -25,20 +26,34 @@ export async function searchTracks(query) {
     }
 }
 
-/**
- * YOUTUBE ID: Finds a Video ID without using a heavy API key
- */
 export async function getYouTubeVideoId(searchQuery) {
-    try {
-        const searchUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(searchQuery)}`;
-        const response = await fetch(`${CORS_PROXY}${encodeURIComponent(searchUrl)}`);
-        const html = await response.text();
+    const targetUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(searchQuery)}`;
+    
+    for (const proxy of PROXIES) {
+        try {
+            console.log(`📡 Trying Proxy: ${proxy}`);
+            let html = "";
 
-        // Scrape the first videoId from the YouTube search results page
-        const videoIdMatch = html.match(/"videoId":"([^"]+)"/);
-        return videoIdMatch ? videoIdMatch[1] : null;
-    } catch (err) {
-        console.error("❌ YouTube ID Scrape Error:", err);
-        return null;
+            if (proxy.includes('allorigins')) {
+                const res = await fetch(`${proxy}${encodeURIComponent(targetUrl)}`);
+                const data = await res.json();
+                html = data.contents;
+            } else {
+                const res = await fetch(`${proxy}${encodeURIComponent(targetUrl)}`);
+                html = await res.text();
+            }
+
+            // Improved Regex to find the videoId
+            const regex = /"videoId":"([^"]{11})"/;
+            const match = html.match(regex);
+            
+            if (match && match[1]) {
+                console.log("✅ Found Video ID:", match[1]);
+                return match[1];
+            }
+        } catch (err) {
+            console.warn(`⚠️ Proxy ${proxy} failed, trying next...`);
+        }
     }
+    return null;
 }
