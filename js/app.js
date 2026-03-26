@@ -1,32 +1,54 @@
 import * as api from './api.js';
 import * as player from './player.js';
 
-// ... (previous showPlaylistDetail and renderTracks code) ...
+const searchInput = document.getElementById('global-search');
+const searchView = document.getElementById('search-view');
+const homeView = document.getElementById('home-view');
+const detailView = document.getElementById('detail-view');
+const searchResultsGrid = document.getElementById('search-results-grid');
 
-function renderTracks(items) {
-    const trackListContainer = document.getElementById('track-list');
-    trackListContainer.innerHTML = '';
+let searchTimeout = null;
+
+searchInput.oninput = (e) => {
+    const query = e.target.value;
     
-    items.forEach((item, index) => {
-        const track = item.track;
+    clearTimeout(searchTimeout);
+    if (query.length < 3) {
+        if (query.length === 0) backToHome();
+        return;
+    }
+
+    searchTimeout = setTimeout(async () => {
+        const tracks = await api.searchTracks(query);
+        renderSearchResults(tracks);
+    }, 500); // Wait 500ms after user stops typing
+};
+
+function renderSearchResults(tracks) {
+    homeView.classList.add('hidden');
+    detailView.classList.add('hidden');
+    searchView.classList.remove('hidden');
+    
+    searchResultsGrid.innerHTML = '';
+    tracks.forEach((track, index) => {
         const row = document.createElement('div');
         row.className = 'track-row';
         row.innerHTML = `
-            <div class="track-number">${index + 1}</div>
+            <div class="track-number"><img src="${track.album.images[2]?.url}" style="width:30px; border-radius:5px;"></div>
             <div class="track-title-cell">${track.name}</div>
             <div class="track-artist-cell">${track.artists[0].name}</div>
-            <div class="track-duration">Preview</div>
+            <div class="track-duration">${track.preview_url ? '🎵' : '🚫'}</div>
         `;
-        
         row.onclick = () => player.loadTrack(track);
-        trackListContainer.appendChild(row);
+        searchResultsGrid.appendChild(row);
     });
 }
 
-// Global Player Controls
-document.getElementById('play-btn').onclick = () => player.togglePlay();
-document.getElementById('volume-slider').oninput = (e) => {
-    document.getElementById('main-audio-player').volume = e.target.value;
-};
+function backToHome() {
+    searchView.classList.add('hidden');
+    detailView.classList.add('hidden');
+    homeView.classList.remove('hidden');
+    searchInput.value = '';
+}
 
-initHome();
+document.getElementById('nav-home-btn').onclick = backToHome;
