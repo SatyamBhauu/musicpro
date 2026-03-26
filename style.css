@@ -1,0 +1,90 @@
+:root {
+    /* Colors */
+    --bg-cream: #FFFDF9;
+    --primary-pink: #FFB6C1;
+    --secondary-mint: #A8E6CF;
+    --text-main: #5A5A5A;
+    --text-muted: #9E9E9E;
+    --white: #FFFFFF;
+    
+    /* Shadows & Effects */
+    --soft-shadow: 0 10px 30px rgba(255, 182, 193, 0.3);
+    --transition: all 0.3s ease;
+    
+    /* Shapes */
+    --radius-card: 20px;
+    --radius-pill: 35px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+body {
+    background-color: var(--bg-cream);
+    color: var(--text-main);
+    overflow-x: hidden;
+    min-height: 100vh;
+}
+
+/* Typography */
+h2.section-title {
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+    color: var(--text-main);
+}
+
+/* Button & Interactive Styles */
+button, .clickable {
+    cursor: pointer;
+    border: none;
+    background: none;
+    transition: var(--transition);
+}
+
+button:hover {
+    transform: scale(1.05);
+}
+
+/* The Player Bar (Global) */
+.player-bar {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 1000px;
+    height: 80px;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    border-radius: var(--radius-pill);
+    box-shadow: var(--soft-shadow);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 30px;
+    z-index: 1000;
+}
+
+/* Responsiveness: Simple Media Query for the Shell */
+@media (max-width: 768px) {
+    .app-nav {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        height: 60px;
+        background: var(--white);
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        /* Mobile Nav specific styling */
+    }
+    
+    .player-bar {
+        bottom: 75px; /* Stay above the nav bar */
+        width: 95%;
+    }
+}
